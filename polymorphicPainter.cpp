@@ -27,10 +27,10 @@ class geometricShape {
         int getYCoordinate() const;                                                                //method to return y coordinate of point
         std::string getName() const;                                                               //method to return name of object
         char getDrawSymbol() const;                                                                //method to return the symbol to draw with
-        void setXCoordinate(int newXCoord);                                                        //method to set x coordinate of point
-        void setYCoordinate(int newYCoord);                                                        //method to set y coordinate of point
-        void setName(std::string newName);                                                         //method to set name of object
-        void setDrawSymbol(char newSymbol);                                                        //method to set symbol to draw with
+        void setXCoordinate(int & newXCoord);                                                      //method to set x coordinate of point
+        void setYCoordinate(int & newYCoord);                                                      //method to set y coordinate of point
+        void setName(std::string & newName);                                                       //method to set name of object
+        void setDrawSymbol(char & newSymbol);                                                      //method to set symbol to draw with
 
     protected:
         int xCoordinate, yCoordinate;
@@ -110,25 +110,25 @@ char geometricShape::getDrawSymbol() const
 }
 
 //method to set the x coordinate implementation
-void geometricShape::setXCoordinate(int newXCoord)
+void geometricShape::setXCoordinate(int & newXCoord)
 {
     this->xCoordinate = newXCoord;
 } 
 
 //method to set the y coordinate implementation
-void geometricShape::setYCoordinate(int newYCoord)
+void geometricShape::setYCoordinate(int & newYCoord)
 {
     this->yCoordinate = newYCoord;
 }
 
 //method to set the name implementation
-void geometricShape::setName(std::string newName)
+void geometricShape::setName(std::string & newName)
 {
     this->name = newName;
 }
 
 //method to set the name implementation
-void geometricShape::setDrawSymbol(char newSymbol)
+void geometricShape::setDrawSymbol(char & newSymbol)
 {
     this->drawSymbol = newSymbol;
 }
@@ -224,10 +224,10 @@ class ellipseShape : public geometricShape  {
         ellipseShape & operator = (ellipseShape && oldEllipse) noexcept;                        //move assignment 
         ~ellipseShape();                                                                        //destructor
 
-        int getxRadSize() const;                                                                      //method to return x-radius length of ellipse
-        int getyRadSize() const;                                                                      //method to return y-radius length of ellipse
-        void setxRadSize(int newXRad);                                                          //method to return x-radius length of ellipse
-        void setyRadSize(int newYRad);                                                          //method to return y-radius length of ellipse
+        int getxRadSize() const;                                                                //method to return x-radius length of ellipse
+        int getyRadSize() const;                                                                //method to return y-radius length of ellipse
+        void setxRadSize(int & newXRad);                                                        //method to return x-radius length of ellipse
+        void setyRadSize(int & newYRad);                                                        //method to return y-radius length of ellipse
         void isCircle();                                                                        //method to check if ellipse is circle, and change if it is
         std::string info() const override;                                                      //method to return information about the ellipse
         void draw(screen * newScreen) const override;                                           //method to draw the ellipse using the screen class
@@ -301,13 +301,13 @@ int ellipseShape::getyRadSize() const
 }
 
 //method to set the x coordinate implementation
-void ellipseShape::setxRadSize(int newXRad)
+void ellipseShape::setxRadSize(int & newXRad)
 {
     this->xRadSize = newXRad;
 } 
 
 //method to set the y coordinate implementation
-void ellipseShape::setyRadSize(int newYRad)
+void ellipseShape::setyRadSize(int & newYRad)
 {
     this->yRadSize = newYRad;
 }
@@ -350,8 +350,8 @@ class polygonShape : public geometricShape  {
 
         int getNumOfSides() const;                                                                              //method to return x-radius length of polygon
         int getSideLength() const;                                                                              //method to return y-radius length of polygon
-        void setNumOfSides(int newNum);                                                                         //method to return x-radius length of polygon
-        void setSideLength(int newSideLength);                                                                  //method to return y-radius length of polygon
+        void setNumOfSides(int & newNum);                                                                       //method to return x-radius length of polygon
+        void setSideLength(int & newSideLength);                                                                //method to return y-radius length of polygon
         std::string info() const override;                                                                      //method to return information about the polygon
         void draw(screen *newScreen) const override;                                                            //method to draw the polygon using the screen class
         
@@ -425,13 +425,13 @@ int polygonShape::getSideLength() const
 }
 
 //method to set the x coordinate implementation
-void polygonShape::setNumOfSides(int newNum)
+void polygonShape::setNumOfSides(int & newNum)
 {
     this->numOfSides = newNum;
 } 
 
 //method to set the y coordinate implementation
-void polygonShape::setSideLength(int newSideLength)
+void polygonShape::setSideLength(int & newSideLength)
 {
     this->sideLength = newSideLength;
 }
@@ -463,8 +463,8 @@ class lineShape : public geometricShape  {
 
         int getTargetXCoord() const;                                                                            //method to return x-radius length of line
         int getTargetYCoord() const;                                                                            //method to return y-radius length of line
-        void setTargetXCoord(int newTargetX);                                                                   //method to return x-radius length of line
-        void setTargetYCoord(int newTargetY);                                                                   //method to return y-radius length of line
+        void setTargetXCoord(int & newTargetX);                                                                 //method to return x-radius length of line
+        void setTargetYCoord(int & newTargetY);                                                                 //method to return y-radius length of line
         std::string info() const override;                                                                      //method to return information about the line
         void draw(screen * newScreen) const override;                                                           //method to draw the line using the screen class
         
@@ -536,13 +536,13 @@ int lineShape::getTargetYCoord() const
 }
 
 //method to set the x coordinate implementation
-void lineShape::setTargetXCoord(int newNum)
+void lineShape::setTargetXCoord(int & newNum)
 {
     this->targetXCoord = newNum;
 } 
 
 //method to set the y coordinate implementation
-void lineShape::setTargetYCoord(int newtargetYCoord)
+void lineShape::setTargetYCoord(int & newtargetYCoord)
 {
     this->targetYCoord = newtargetYCoord;
 }
@@ -580,7 +580,7 @@ class bunch {
         }
         ~bunch();
 
-        void setNumberOfItems(int newNumber);
+        void setNumberOfItems(int & newNumber);
         int getNumberOfItems();
         void add(Shape newShape);
         void remove();
@@ -648,7 +648,7 @@ bunch<Shape>::~bunch()
 
 //public method to change the number of items in bunch
 template<typename Shape>
-void bunch<Shape>::setNumberOfItems(int newNumber)
+void bunch<Shape>::setNumberOfItems(int & newNumber)
 {
     this->numberOfItems = newNumber;
 }
@@ -664,8 +664,10 @@ int bunch<Shape>::getNumberOfItems()
 template<typename Shape>
 void bunch<Shape>::add(Shape newShape)
 { 
-    collection[getNumberOfItems()] = newShape;
-    setNumberOfItems(getNumberOfItems() + 1);
+    int num = getNumberOfItems();
+    collection[num] = newShape;
+    num += 1;
+    setNumberOfItems(num);
 }
 
 //public method to remove the most recent shape from the bunch
@@ -677,8 +679,10 @@ void bunch<Shape>::remove()
         std::cout << "bunch empty" << std::endl;
         return;
     }
-    collection[getNumberOfItems()] = nullptr;
-    setNumberOfItems(getNumberOfItems() - 1);
+    int num = getNumberOfItems();
+    collection[num] = nullptr;
+    num -= 1;
+    setNumberOfItems(num);
     return;
 }
 
