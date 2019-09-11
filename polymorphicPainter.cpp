@@ -335,9 +335,7 @@ void ellipseShape::isCircle()
     {
         this->name = "circle";
     }
-
 }
-
 
 
 class polygonShape : public geometricShape  {
@@ -451,7 +449,6 @@ void polygonShape::draw(screen *newScreen) const
 {
     newScreen->polygon(getXCoordinate(), getYCoordinate(), getNumOfSides(), getSideLength(), getDrawSymbol());
     //newScreen->display();
-
 }
 
 class lineShape : public geometricShape  {
@@ -601,7 +598,7 @@ bunch<Shape>::bunch() : numberOfItems{0}  { }
 
 //public copy constructor
 template<typename Shape>
-bunch<Shape>::bunch(bunch const & that) : numberOfItems{that.numberOfItems}
+bunch<Shape>::bunch(bunch const & that) : numberOfItems{that.numberOfItems}, collection{that.collection}
 {  
     for(int i = 0; i < numberOfItems; i++) 
     { 
@@ -688,139 +685,76 @@ void bunch<Shape>::remove()
 }
 
 
-// void addNewLine(string line, bunch<lineShape> *lineBunch)
-// {
-//     //add to line bunch instance
-//     int * input = new int[4];
-//     bool negative;
-//     int index = 0, tempI = 0;
-//     while(line[index] != '\0')
-//     {
-//         if(line[index] == '-')
-//         negative = true;
-//         if(isdigit(static_cast<int>(line[index])) != 0)
-//         {
-//             char numberCh = line[index];
-//             int num = atoi(&numberCh);
-//             if(negative == true)
-//                 num *= -1;
-//             input[tempI] = num;
-//             negative = false;
-//             tempI++;
-//         }
-//         index++;
-//     }
-//     lineShape newLine(input[0],input[1],input[2],input[3]);
-//     newLine.info();
-//     lineBunch->add(newLine);
-//     delete[] input; 
-// }
+void addNewShape(string line, string word, bunch<geometricShape *> *newCollection)
+{
+    //add a shape to the bunch instance
+    int * input = new int[4];
+    bool negative;
+    char *twoDigits = new char[10];
+    int index = 0, tempI = 0;
+    while(line[index] != '\0')
+    {
+        if(line[index] == '-')
+        negative = true;
+        if(isdigit(static_cast<int>(line[index])) != 0)
+        {
+            char numberCh = line[index];
+            
+            twoDigits = strcat(twoDigits, &numberCh);
+            std::cout << twoDigits << std::endl;
+            if(isdigit(static_cast<int>(line[index + 1])) != 0)
+            {
+                index++;
+                continue;
+            }
+            int num = atoi(twoDigits);
+            if(negative == true)
+                num *= -1;
+            input[tempI] = num;
+            negative = false;
+            tempI++;
+            for(int i = 0; i < 10; i++)
+            {
+                twoDigits[i] = '\0';
+            }
+            
+        }
+        index++;
+    }
 
-// void addNewEllipse(string line, bunch<ellipseShape> *ellipseBunch)
-// {
-//     //add to line bunch instance
-//     int * input = new int[4];
-//     bool negative;
-//     int index = 0, tempI = 0;
-//     while(line[index] != '\0')
-//     {
-//         if(line[index] == '-')
-//         negative = true;
-//         if(isdigit(static_cast<int>(line[index])) != 0)
-//         {
-//             char numberCh = line[index];
-//             int num = atoi(&numberCh);
-//             if(negative == true)
-//                 num *= -1;
-//             input[tempI] = num;
-//             negative = false;
-//             tempI++;
-//         }
-//         index++;
-//     }
-//     ellipseShape newEllipse(input[0],input[1],input[2],input[3]);
-//     newEllipse.info();
-//     ellipseBunch->add(newEllipse);
-//     delete[] input; 
-// }
-
-// void addNewPolygon(string line, bunch<polygonShape> *polygonBunch)
-// {
-//     //add to line bunch instance
-//     int * input = new int[4];
-//     bool negative;
-//     int index = 0, tempI = 0;
-//     while(line[index] != '\0')
-//     {
-//         if(line[index] == '-')
-//         negative = true;
-//         if(isdigit(static_cast<int>(line[index])) != 0)
-//         {
-//             char numberCh = line[index];
-//             int num = atoi(&numberCh);
-//             if(negative == true)
-//                 num *= -1;
-//             input[tempI] = num;
-//             negative = false;
-//             tempI++;
-//         }
-//         index++;
-//     }
-//     polygonShape newPolygon(input[0],input[1],input[2],input[3]);
-//     newPolygon.info();
-//     polygonBunch->add(newPolygon);
-//     delete[] input; 
-// }
-
-// void addNewPoint(string line, bunch<originPoint> *pointBunch)
-// {
-//     //add to line bunch instance
-//     int * input = new int[2];
-//     bool negative;
-//     int index = 0, tempI = 0;
-//     while(line[index] != '\0')
-//     {
-//         if(line[index] == '-')
-//         negative = true;
-//         if(isdigit(static_cast<int>(line[index])) != 0)
-//         {
-//             char numberCh = line[index];
-//             int num = atoi(&numberCh);
-//             if(negative == true)
-//                 num *= -1;
-//             input[tempI] = num;
-//             negative = false;
-//             tempI++;
-//         }
-//         index++;
-//     }
-//     originPoint newPoint(input[0],input[1]);
-//     newPoint.info();
-//     pointBunch->add(newPoint);
-//     delete[] input; 
-// }
-
-
-
+    if(word.compare("line") == 0)
+    {
+        geometricShape * importedLine = new lineShape(input[0],input[1],input[2],input[3]);
+        newCollection->add(importedLine);
+    }
+    else if(word.compare("ellipse") == 0)
+    {
+       geometricShape * importedEllipse = new ellipseShape(input[0],input[1],input[2],input[3]);
+        newCollection->add(importedEllipse); 
+    }
+    else if(word.compare("polygon") == 0)
+    {
+        geometricShape * importedPolygon = new polygonShape(input[0],input[1],input[2],input[3]);
+        newCollection->add(importedPolygon);
+    }
+    else if(word.compare("point") == 0)
+    {
+        geometricShape * importedPoint = new originPoint(input[0],input[1]);
+        newCollection->add(importedPoint);
+    }
+    else 
+    {
+        std::cout << "Error importing shape" << std::endl;
+    }
+    
+    delete[] input;
+    delete[] twoDigits;
+}
 
 int main()
 {
     screen newScreen;                                       //screen class item
     bunch<geometricShape *> newCollection;                  //bunch class to hold all geometric shape objects
-
-
-    //geometricShape * p = new originPoint(1,2);
-    ellipseShape e(1,2, 3, 4);
-    polygonShape poly(4, 5, 6, 7);
-    lineShape l(-1, -1, 10, 10);
-    
-    // geometricShape * ptr = &p;
-   // newCollection.add(p);
-    //std::cout << p->info();
-    std::cout << e.info();
-    std::cout << poly.info();
-    std::cout << l.info();
-
     int input;                                              //menu input variable
     int originX, originY;                                   //shape center point variables
 
@@ -895,340 +829,201 @@ int main()
             }
             case 6:
             {
-                // int type, shapeIndex;
-                // std::cout << "Enter option from below and an index to paint: \n1)point \n2)ellipse \n3)polygon \n4)line" << std::endl;
-                // std::cin >> type >> shapeIndex;
+                int shapeIndex;
+                std::cout << "Enter an index from the collection to paint: " << std::endl;
+                std::cin >> shapeIndex;
+                std::cout << newCollection.getNumberOfItems() << std::endl;
 
-                // switch (type) {
-                //     case 1:
-                //     {
-                //         for(int i = 0; i < pointBunch.getNumberOfItems(); i++)
-                //         {
-                //             if(shapeIndex == pointBunch.getNumberOfItems() || i == shapeIndex)
-                //             {
-                //                 pointBunch[i]->draw(&newScreen);
-                //             }                                              
-                //         }
-                //         newScreen.display();
-                //         newScreen.clear();
-                //         break;
-                //     }
-                //     case 2:
-                //     {
-                //         for(int i = 0; i < ellipseBunch.getNumberOfItems(); i++)
-                //         {
-                //             if(shapeIndex == ellipseBunch.getNumberOfItems() || i == shapeIndex)
-                //                 ellipseBunch[i]->draw(&newScreen);              
-                //         }
-                //         newScreen.display();
-                //         newScreen.clear();
-                //         break;
-                //     }
-                //     case 3:
-                //     {
-                //         for(int i = 0; i < polygonBunch.getNumberOfItems(); i++)
-                //         {
-                //             if(shapeIndex == polygonBunch.getNumberOfItems() || i == shapeIndex)
-                //                 polygonBunch[i]->draw(&newScreen);              
-                //         }
-                //         newScreen.display();
-                //         newScreen.clear();
-                //         break;
-                //     }
-                //     case 4:
-                //     {
-                //         for(int i = 0; i < lineBunch.getNumberOfItems(); i++)
-                //         {
-                //             if(shapeIndex == lineBunch.getNumberOfItems() || i == shapeIndex)
-                //                 lineBunch[i]->draw(&newScreen);              
-                //         }
-                //         newScreen.display();
-                //         newScreen.clear();
-                //         break;
-                //     }
-                //     ;
-                //     default:
-                //     {
-                //       std::cout << "Error selecting shape type" << std::endl;
-                //       return EXIT_FAILURE;  
-                //     }
-                // }
+                for(int i = 0; i < newCollection.getNumberOfItems(); i++)
+                {
+                    if(shapeIndex == newCollection.getNumberOfItems() || i == shapeIndex)
+                            newCollection[i]->draw(&newScreen);           
+                }
+                newScreen.display();
+                newScreen.clear();            
                 break;
             }
             case 7:
             {
                 //happy face
-                // ellipseShape face(0, 0, 10, 12);
-                // ellipseShape rEye(5, 5, 2, 1);
-                // ellipseShape lEye(-5, 5, 2, 1);
-                // polygonShape nose(0, 0, 7, 2);
-                // lineShape leftSmile(-7,-1, -4, -6);
-                // lineShape midSmile(-4,-6, 4, -6);
-                // lineShape rightSmile(4, -6, 7, -1);
+                geometricShape * face = new ellipseShape(0, 0, 10, 12);
+                geometricShape * rEye = new ellipseShape(5, 5, 2, 1);
+                geometricShape * lEye = new ellipseShape(-5, 5, 2, 1);
+                geometricShape * nose = new polygonShape(0, 0, 7, 2);
+                geometricShape * leftSmile = new lineShape(-7,-1, -4, -6);
+                geometricShape * midSmile = new lineShape(-4,-6, 4, -6);
+                geometricShape * rightSmile = new lineShape(4, -6, 7, -1);
 
-                // ellipseBunch.add(face);
-                // ellipseBunch.add(rEye);
-                // ellipseBunch.add(lEye);
-                // polygonBunch.add(nose);
-                // lineBunch.add(leftSmile);
-                // lineBunch.add(midSmile); 
-                // lineBunch.add(rightSmile);
+                newCollection.add(face);
+                newCollection.add(rEye);
+                newCollection.add(lEye);
+                newCollection.add(nose);
+                newCollection.add(leftSmile);
+                newCollection.add(midSmile); 
+                newCollection.add(rightSmile);
 
-                // std::ofstream out("happy.txt");
-                // if (!out)
-                // {
-                //     std::cerr << "Failed to open output stream for confused" << std::endl;
-                //     out.close();
-                //     return EXIT_FAILURE;
-                // }
+                std::ofstream out("happy.txt");
+                if (!out)
+                {
+                    std::cerr << "Failed to open output stream for confused" << std::endl;
+                    out.close();
+                    return EXIT_FAILURE;
+                }
                 
-                // for(int i = 0; i < pointBunch.getNumberOfItems(); i++)
-                // {
-                //     pointBunch[i]->draw(&newScreen);
-                //     out << pointBunch[i]->info();
-                // }
+                for(int i = 0; i < newCollection.getNumberOfItems(); i++)
+                {
+                    newCollection[i]->draw(&newScreen);
+                    out << newCollection[i]->info();
+                }
                     
-                // for(int i = 0; i < lineBunch.getNumberOfItems(); i++)
-                // {
-                //     lineBunch[i]->draw(&newScreen);
-                //     out << lineBunch[i]->info();
-                // }
-                    
-                // for(int i = 0; i < ellipseBunch.getNumberOfItems(); i++)
-                // {
-                //     ellipseBunch[i]->draw(&newScreen);
-                //     out << ellipseBunch[i]->info();
-                // }
-                    
-                // for(int i = 0; i < polygonBunch.getNumberOfItems(); i++)
-                // {
-                //     polygonBunch[i]->draw(&newScreen);
-                //     out << polygonBunch[i]->info();
-                // }
-                // out.close();
-                // newScreen.display();
-                // newScreen.clear();
+                out.close();
+                newScreen.display();
+                newScreen.clear();
                 break;
             }
             case 8:
             {
                 //angry face
-                // ellipseShape face(0, 0, 10, 12);
-                // ellipseShape rEye(5, 5, 2, 1);
-                // ellipseShape lEye(-5, 5, 2, 1);
-                // polygonShape nose(0, 0, 7, 2);
-                // lineShape leftSmile(-6,-6, -2, -3);
-                // lineShape midSmile(-2,-3, 2, -3);
-                // lineShape rightSmile(2, -3, 6, -6);
-                // lineShape rightEyeBrow(4, 8, 2, 6);
-                // lineShape leftEyeBrow(-4, 8, -2, 6);
+                geometricShape * face = new ellipseShape(0, 0, 10, 12);
+                geometricShape * rEye = new ellipseShape(5, 5, 2, 1);
+                geometricShape * lEye = new ellipseShape(-5, 5, 2, 1);
+                geometricShape * nose = new polygonShape(0, 0, 7, 2);
+                geometricShape * leftSmile = new lineShape(-6,-6, -2, -3);
+                geometricShape * midSmile = new lineShape(-2,-3, 2, -3);
+                geometricShape * rightSmile = new lineShape(2, -3, 6, -6);
+                geometricShape * rightEyeBrow = new lineShape(4, 8, 2, 6);
+                geometricShape * leftEyeBrow = new lineShape(-4, 8, -2, 6);
 
-                // ellipseBunch.add(face);
-                // ellipseBunch.add(rEye);
-                // ellipseBunch.add(lEye);
-                // polygonBunch.add(nose);
-                // lineBunch.add(leftSmile);
-                // lineBunch.add(midSmile);
-                // lineBunch.add(rightSmile);
-                // lineBunch.add(rightEyeBrow);
-                // lineBunch.add(leftEyeBrow);
+                newCollection.add(face);
+                newCollection.add(rEye);
+                newCollection.add(lEye);
+                newCollection.add(nose);
+                newCollection.add(leftSmile);
+                newCollection.add(midSmile);
+                newCollection.add(rightSmile);
+                newCollection.add(rightEyeBrow);
+                newCollection.add(leftEyeBrow);
 
-                // std::ofstream out("angry.txt");
-                // if (!out)
-                // {
-                //     std::cerr << "Failed to open output stream for confused" << std::endl;
-                //     out.close();
-                //     return EXIT_FAILURE;
-                // }
+                std::ofstream out("angry.txt");
+                if (!out)
+                {
+                    std::cerr << "Failed to open output stream for confused" << std::endl;
+                    out.close();
+                    return EXIT_FAILURE;
+                }
                 
-                // for(int i = 0; i < pointBunch.getNumberOfItems(); i++)
-                // {
-                //     pointBunch[i]->draw(&newScreen);
-                //     out << pointBunch[i]->info();
-                // }
+                for(int i = 0; i < newCollection.getNumberOfItems(); i++)
+                {
+                    newCollection[i]->draw(&newScreen);
+                    out << newCollection[i]->info();
+                }
                     
-                // for(int i = 0; i < lineBunch.getNumberOfItems(); i++)
-                // {
-                //     lineBunch[i]->draw(&newScreen);
-                //     out << lineBunch[i]->info();
-                // }
-                    
-                // for(int i = 0; i < ellipseBunch.getNumberOfItems(); i++)
-                // {
-                //     ellipseBunch[i]->draw(&newScreen);
-                //     out << ellipseBunch[i]->info();
-                // }
-                    
-                // for(int i = 0; i < polygonBunch.getNumberOfItems(); i++)
-                // {
-                //     polygonBunch[i]->draw(&newScreen);
-                //     out << polygonBunch[i]->info();
-                // }
-                // out.close();
-                // newScreen.display();
-                // newScreen.clear();
+                out.close();
+                newScreen.display();
+                newScreen.clear();
                 break;
             }
             case 9:
             {
                 //unsure face
-                // ellipseShape face(0, 0, 10, 12);
-                // ellipseShape rEye(5, 5, 2, 1);
-                // ellipseShape lEye(-5, 5, 2, 1);
-                // polygonShape nose(0, 0, 7, 2);
-                // lineShape leftSmile(-6,-6, -2, -3);
-                // lineShape midSmile(-2,-3, 2, -6);
-                // lineShape rightSmile(2, -6, 6, -3);
-                // originPoint qMarkPoint(0, 13);
-                // lineShape qMarkBase(0, 15, 0, 16);
-                // lineShape qMarkSide(0, 16, 2, 18);
-                // lineShape qMarkCurve(2, 18, 2, 20);
-                // lineShape qMarkTop(2, 20, -2, 20);
-                // lineShape qMarkHang(-2, 20, -2, 19);
+                geometricShape * face = new ellipseShape(0, 0, 10, 12);
+                geometricShape * rEye = new ellipseShape(5, 5, 2, 1);
+                geometricShape * lEye = new ellipseShape(-5, 5, 2, 1);
+                geometricShape * nose = new polygonShape(0, 0, 7, 2);
+                geometricShape * leftSmile = new lineShape(-6,-6, -2, -3);
+                geometricShape * midSmile = new lineShape(-2,-3, 2, -6);
+                geometricShape * rightSmile = new lineShape(2, -6, 6, -3);
+                geometricShape * qMarkPoint = new originPoint(0, 13);
+                geometricShape * qMarkBase = new lineShape(0, 15, 0, 16);
+                geometricShape * qMarkSide = new lineShape(0, 16, 2, 18);
+                geometricShape * qMarkCurve = new lineShape(2, 18, 2, 20);
+                geometricShape * qMarkTop = new lineShape(2, 20, -2, 20);
+                geometricShape * qMarkHang = new lineShape(-2, 20, -2, 19);
 
-                // ellipseBunch.add(face);
-                // ellipseBunch.add(rEye);
-                // ellipseBunch.add(lEye);
-                // polygonBunch.add(nose);
-                // lineBunch.add(leftSmile);
-                // lineBunch.add(midSmile);
-                // lineBunch.add(rightSmile);
-                // lineBunch.add(qMarkBase);
-                // lineBunch.add(qMarkSide);
-                // lineBunch.add(qMarkCurve);
-                // lineBunch.add(qMarkTop);
-                // lineBunch.add(qMarkHang);
-                // pointBunch.add(qMarkPoint);
-                // std::ofstream out("unsure.txt");
-                // if (!out)
-                // {
-                //     std::cerr << "Failed to open output stream for confused" << std::endl;
-                //     out.close();
-                //     return EXIT_FAILURE;
-                // }
-                
-                // for(int i = 0; i < pointBunch.getNumberOfItems(); i++)
-                // {
-                //     pointBunch[i]->draw(&newScreen);
-                //     out << pointBunch[i]->info();
-                // }
+                newCollection.add(face);
+                newCollection.add(rEye);
+                newCollection.add(lEye);
+                newCollection.add(nose);
+                newCollection.add(leftSmile);
+                newCollection.add(midSmile);
+                newCollection.add(rightSmile);
+                newCollection.add(qMarkBase);
+                newCollection.add(qMarkSide);
+                newCollection.add(qMarkCurve);
+                newCollection.add(qMarkTop);
+                newCollection.add(qMarkHang);
+                newCollection.add(qMarkPoint);
+
+                std::ofstream out("unsure.txt");
+                if (!out)
+                {
+                    std::cerr << "Failed to open output stream for confused" << std::endl;
+                    out.close();
+                    return EXIT_FAILURE;
+                }
+                   
+                for(int i = 0; i < newCollection.getNumberOfItems(); i++)
+                {
+                    newCollection[i]->draw(&newScreen);
+                    out << newCollection[i]->info();
+                }
+                out.close();
                     
-                // for(int i = 0; i < lineBunch.getNumberOfItems(); i++)
-                // {
-                //     lineBunch[i]->draw(&newScreen);
-                //     out << lineBunch[i]->info();
-                // }
-                    
-                // for(int i = 0; i < ellipseBunch.getNumberOfItems(); i++)
-                // {
-                //     ellipseBunch[i]->draw(&newScreen);
-                //     out << ellipseBunch[i]->info();
-                // }
-                    
-                // for(int i = 0; i < polygonBunch.getNumberOfItems(); i++)
-                // {
-                //     polygonBunch[i]->draw(&newScreen);
-                //     out << polygonBunch[i]->info();
-                // }
-                // out.close();
-                    
-                // newScreen.display();
-                // newScreen.clear();
+                newScreen.display();
+                newScreen.clear();
                 break;
             }
             case 10:
             {
                 //save current shapes to file
-            //     std::ofstream output("shapes.txt");
-            //     if (!output)
-            //     {
-            //         std::cerr << "Failed to open output stream for confused" << std::endl;
-            //         output.close();
-            //         return EXIT_FAILURE;
-            //     }
-            //     for(int i = 0; i < pointBunch.getNumberOfItems(); i++)
-            //         output << pointBunch[i]->info();
-            //     for(int i = 0; i < lineBunch.getNumberOfItems(); i++)
-            //         output << lineBunch[i]->info();
-            //     for(int i = 0; i < ellipseBunch.getNumberOfItems(); i++)
-            //         output << ellipseBunch[i]->info();
-            //     for(int i = 0; i < polygonBunch.getNumberOfItems(); i++)
-            //         output << polygonBunch[i]->info();
-            //     output.close();
-            //     std::cout << "Current Shapes have been saved to file." << std::endl;
-            //    break;
+                std::ofstream output("shapes.txt");
+                if (!output)
+                {
+                    std::cerr << "Failed to open output stream for confused" << std::endl;
+                    output.close();
+                    return EXIT_FAILURE;
+                }
+                for(int i = 0; i < newCollection.getNumberOfItems(); i++)
+                    output << newCollection[i]->info();
+                output.close();
+                std::cout << "Current Shapes have been saved to file." << std::endl;
+               break;
             }
             case 11:
             {
                 //import shapes from file
-                // std::ifstream input("shapes.txt");
-                // if (!input)
-                // {
-                //     std::cerr << "Failed to open output stream for confused" << std::endl;
-                //     input.close();
-                //     return EXIT_FAILURE;
-                // }
-                // std::string line;
-                // std::string word;
+                std::ifstream input("shapes.txt");
+                if (!input)
+                {
+                    std::cerr << "Failed to open output stream for confused" << std::endl;
+                    input.close();
+                    return EXIT_FAILURE;
+                }
+                std::string line;
+                std::string word;
 
-                // while(getline(input, line))
-                // {
-                //     std::istringstream ss(line);
-                //     do {
-                //         string word;
-                //         ss >> word;
-
-                //         if(word.compare("line") == 0)
-                //         {
-                //             addNewLine(line, &lineBunch);
-                //             break;
-                //         }
-                //         if(word.compare("ellipse") == 0)
-                //         {
-                //             addNewEllipse(line, &ellipseBunch);
-                //             break;
-                //         }
-                //         if(word.compare("polygon") == 0)
-                //         {
-                //             addNewPolygon(line, &polygonBunch);
-                //             break;
-                //         }
-                //         if(word.compare("point") == 0)
-                //         {
-                //             addNewPoint(line, &pointBunch);
-                //             break;
-                //         }
-                //     } while(ss);
-                // }
-
-                // for(int i = 0; i < pointBunch.getNumberOfItems(); i++)
-                //     std::cout << pointBunch[i]->info() << std::endl;
-                // for(int i = 0; i < lineBunch.getNumberOfItems(); i++)
-                //     std::cout << lineBunch[i]->info() << std::endl;
-                // for(int i = 0; i < ellipseBunch.getNumberOfItems(); i++)
-                //     std::cout << ellipseBunch[i]->info() << std::endl;
-                // for(int i = 0; i < polygonBunch.getNumberOfItems(); i++)
-                //     std::cout << polygonBunch[i]->info() << std::endl;
-
-                
-                // std::cout << "Shapes have been imported from file." << std::endl;
+                while(getline(input, line))
+                {
+                    std::istringstream ss(line);
+                    do {
+                        string word;
+                        ss >> word;
+                        addNewShape(line, word, &newCollection);
+                        break;
+                        
+                    } while(ss);
+                }
+               
+                std::cout << "Shapes have been imported from file." << std::endl;
                 break;
             }
             case 12:
             {
-                // while(lineBunch.getNumberOfItems() > 0)
-                // {
-                //     lineBunch.remove();
-                // }
-                // while(polygonBunch.getNumberOfItems() > 0)
-                // {
-                //     polygonBunch.remove();
-                // }
-                // while(ellipseBunch.getNumberOfItems() > 0)
-                // {
-                //     ellipseBunch.remove();
-                // }
-                // std::cout << "All current shapes have been deleted." << std::endl;
+                while(newCollection.getNumberOfItems() > 0)
+                {
+                    newCollection.remove();
+                }
+                std::cout << "All current shapes have been deleted." << std::endl;
                 break;
             }
             case 0:

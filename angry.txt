@@ -1,0 +1,9 @@
+ellipse x y s 		ellipse 0 0 10 12 +
+ellipse x y s 		ellipse 5 5 2 1 +
+ellipse x y s 		ellipse -5 5 2 1 +
+polygon x y s 		polygon 0 0 7 2 *
+line x y s 		line -6 -6 -2 -3 *
+line x y s 		line -2 -3 2 -3 *
+line x y s 		line 2 -3 6 -6 *
+line x y s 		line 4 8 2 6 *
+line x y s 		line -4 8 -2 6 *
