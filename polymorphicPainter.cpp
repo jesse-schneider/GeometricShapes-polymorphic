@@ -718,8 +718,7 @@ void addNewShape(string line, string word, bunch<geometricShape *> *newCollectio
             for(int i = 0; i < 10; i++)
             {
                 twoDigits[i] = '\0';
-            }
-            
+            } 
         }
         index++;
     }
