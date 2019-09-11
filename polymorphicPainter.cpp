@@ -4,11 +4,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <cctype>
 #include <cstring>
 #include <cstdlib>
 #include "screen.cpp"
-#include <typeinfo>
 
 
 class geometricShape {
